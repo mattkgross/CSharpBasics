@@ -62,7 +62,7 @@ namespace CSharpBasics
             this.IsDoublyLinked = isDoublyLinked;
             this.data = data;
             this.next = next;
-            this.prev = prev;
+            this.prev = this.IsDoublyLinked ? prev : null;
         }
 
         /// <summary>
