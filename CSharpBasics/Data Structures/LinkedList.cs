@@ -31,15 +31,42 @@ namespace CSharpBasics
 
             set
             {
+                if (!NodeIsCompatible(value))
+                {
+                    throw new ArgumentException($"Cannot link a node that is {(value.IsDoublyLinked ? string.Empty : "not ")}doubly " +
+                                                $"linked to a node that is{(this.IsDoublyLinked ? "." : " not.")}");
+                }
+
                 this.prev = this.IsDoublyLinked ? value : null;
             }
         }
 
         /// <summary>
+        /// The next node in the list.
+        /// </summary>
+        private Node<T> next;
+        /// <summary>
         /// Gets or sets the next node.
         /// </summary>
         /// <value>The next node.</value>
-        public Node<T> Next { get; set; }
+        public Node<T> Next
+        {
+            get
+            {
+                return this.next;
+            }
+
+            set
+            {
+                if (!NodeIsCompatible(value))
+                {
+                    throw new ArgumentException($"Cannot link a node that is {(value.IsDoublyLinked ? string.Empty : "not ")}doubly " +
+                                                $"linked to a node that is{(this.IsDoublyLinked ? "." : " not.")}");
+                }
+
+                this.next = value;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether this <see cref="T:CSharpBasics.Node`1"/> is doubly linked.
@@ -56,7 +83,7 @@ namespace CSharpBasics
         /// <param name="data">The node's data.</param>
         /// <param name="next">The next node.</param>
         /// <param name="prev">The previous node.</param>
-        public Node(bool isDoublyLinked = true, T data = default(T), Node<T> next = null, Node<T> prev = null)
+        public Node(bool isDoublyLinked, T data = default(T), Node<T> next = null, Node<T> prev = null)
         {
             this.IsDoublyLinked = isDoublyLinked;
             this.Data = data;
@@ -81,6 +108,18 @@ namespace CSharpBasics
             this.Prev = copy.Prev;
         }
         #endregion Constructors
+
+        #region Helpers
+        /// <summary>
+        /// Determines if a given node is compatible with the current list.
+        /// </summary>
+        /// <returns><c>true</c>, if is a compatible node, <c>false</c> otherwise.</returns>
+        /// <param name="node">Node to check.</param>
+        private bool NodeIsCompatible(Node<T> node)
+        {
+            return node == null || this.IsDoublyLinked == node.IsDoublyLinked;
+        }
+        #endregion Helpers
     }
 
     /// <summary>
@@ -93,7 +132,7 @@ namespace CSharpBasics
         /// Gets the number of elements in the list.
         /// </summary>
         /// <value>The count.</value>
-        public uint Count { get; private set; } = 1;
+        public uint Count { get; private set; } = 0;
         #endregion Variables
 
         #region Properties
@@ -114,17 +153,44 @@ namespace CSharpBasics
         /// </summary>
         /// <value><c>true</c> if is doubly linked; otherwise, <c>false</c>.</value>
         public bool IsDoublyLinked { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="T:CSharpBasics.LinkedList`1"/> is empty.
+        /// </summary>
+        /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
+        public bool IsEmpty
+        {
+            get
+            {
+                return this.Count == 0;
+            }
+        }
         #endregion Properties
 
         #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="T:CSharpBasics.LinkedList`1"/> class.
         /// </summary>
+        /// <param name="isDoublyLinked">If set to <c>true</c> is doubly linked.</param>
         /// <param name="head">The head node. A hard copy is made and inserted into the list.</param>
-        public LinkedList(Node<T> head)
+        public LinkedList(bool isDoublyLinked, Node<T> head = null)
         {
-            this.IsDoublyLinked = head.IsDoublyLinked;
+            this.IsDoublyLinked = isDoublyLinked;
+
+            if (head == null)
+            {
+                // Empty list to start.
+                return;
+            }
+
+            if (!NodeIsCompatible(head))
+            {
+                throw new ArgumentException($"Cannot insert node that is {(head.IsDoublyLinked ? string.Empty : "not ")}doubly " +
+                                            $"linked into a list that is{(this.IsDoublyLinked ? "." : " not.")}");
+            }
+
             this.Head = new Node<T>(head);
+            this.Count++;
 
             // Sanity check. We don't want any previous links for the head.
             this.Head.Prev = null;
@@ -163,7 +229,7 @@ namespace CSharpBasics
                                             $"linked into a list that is{(this.IsDoublyLinked ? "." : " not.")}");
             }
 
-            // Insert at the end of the list if no index specified or it's bigger than the current size.
+            // Insert at the end of the list if no index specified or it's bigger than the current size (this will always happen if the list is empty).
             if (index < 0 || this.Count <= index)
             {
                 // If doubly linked, link the previous to the end of our current list.
@@ -172,8 +238,17 @@ namespace CSharpBasics
                     newNode.Prev = this.Tail;
                 }
 
-                this.Tail.Next = newNode;
-                this.Tail = this.Tail.Next;
+                if (!this.IsEmpty)
+                {
+                    this.Tail.Next = newNode;
+                    this.Tail = this.Tail.Next;
+                }
+                else
+                {
+                    this.Head = newNode;
+                    this.Tail = newNode;
+                }
+
                 this.Count++;
 
                 // Set the tail back to the end of the list while making hard copies as we go. O(n).
@@ -252,11 +327,85 @@ namespace CSharpBasics
         }
 
         /// <summary>
+        /// Remove the specified data from the list.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="data">The data to remove.</param>
+        /// <param name="startAt">Where in the list to start. Defaults to the beginning.</param>
+        /// <param name="allInstances">If set to <c>true</c> all nodes with the data will be removed; otherwise, only the first instance will be.</param>
+        public void Remove(T data, uint startAt = 0, bool allInstances = false)
+        {
+            /*Node<T> temp = this.Head;
+            Node<T> temp2 = temp;
+            uint index = 0;
+
+            while (index < startAt || (!temp?.Data.Equals(data) ?? false))
+            {
+                // No need to waste time assigning the variable if it's doubly linked.
+                temp2 = this.IsDoublyLinked ? null : temp;
+                temp = temp.Next;
+                index++;
+            }
+
+            // Wasn't in the list.
+            if (temp == null)
+            {
+                return;
+            }
+
+            if (this.IsDoublyLinked)
+            {
+                // If it's the first element, then there will be no previous node to modify.
+                if (temp.Prev != null)
+                {
+                    temp.Prev.Next = temp.Next;
+                }
+
+                temp.Next.Prev = temp.Prev;
+            }
+            else
+            {
+                temp2.Next = temp.Next;
+            }
+
+            // If the head was removed, assign the new one.
+            if (index == 0)
+            {
+                this.Head = temp.Next;
+            }
+            // If the tail was removed, assign the new one.
+            else if (index == this.Count - 1)
+            {
+                this.Tail = this.IsDoublyLinked ? temp.Prev : temp2;
+            }*/
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Return a reversed copy of this instance.
+        /// </summary>
+        /// <returns>The reversed list.</returns>
+        public LinkedList<T> Reverse()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasCycle()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:CSharpBasics.LinkedList`1"/>.
         /// </summary>
         /// <returns>A <see cref="T:System.String"/> that represents the current <see cref="T:CSharpBasics.LinkedList`1"/>.</returns>
         public override string ToString()
         {
+            if (this.IsEmpty)
+            {
+                return string.Empty;
+            }
+
             string separator = this.IsDoublyLinked ? "<->" : "->";
             string output = Head.Data.ToString();
             Node<T> temp = this.Head.Next;
