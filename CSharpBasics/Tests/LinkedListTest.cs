@@ -132,7 +132,81 @@ namespace CSharpBasicsTests
         [Test]
         public void RemoveTest()
         {
+            LinkedList<int> singleList = new LinkedList<int>(false);
 
+            singleList.Remove(1);
+            Assert.IsTrue(singleList.IsEmpty);
+
+            singleList.Insert(0);
+            singleList.Insert(1);
+            singleList.Insert(2);
+            singleList.Insert(3);
+
+            singleList.Remove(2);
+            Assert.AreEqual(3, singleList.Count);
+            Assert.AreEqual("0 -> 1 -> 3", singleList.ToString());
+
+            singleList.Remove(5);
+            singleList.Remove(0, 1);
+            Assert.AreEqual(3, singleList.Count);
+
+            singleList.Insert(0);
+            singleList.Insert(0);
+            singleList.Remove(0, 1);
+            Assert.AreEqual(4, singleList.Count);
+            Assert.AreEqual("0 -> 1 -> 3 -> 0", singleList.ToString());
+
+            LinkedList<int> doubleList = new LinkedList<int>(true);
+
+            doubleList.Remove(1);
+            Assert.IsTrue(doubleList.IsEmpty);
+
+            doubleList.Insert(0);
+            doubleList.Insert(1);
+            doubleList.Insert(2);
+            doubleList.Insert(3);
+
+            doubleList.Remove(2);
+            Assert.AreEqual(3, doubleList.Count);
+            Assert.AreEqual("0 <-> 1 <-> 3", doubleList.ToString());
+
+            doubleList.Remove(5);
+            doubleList.Remove(0, 1);
+            Assert.AreEqual(3, doubleList.Count);
+
+            doubleList.Insert(0);
+            doubleList.Insert(0);
+            doubleList.Remove(0, 1);
+            Assert.AreEqual(4, doubleList.Count);
+            Assert.AreEqual("0 <-> 1 <-> 3 <-> 0", doubleList.ToString());
+        }
+
+        [Test]
+        public void ReverseTest()
+        {
+            LinkedList<int> singleList = new LinkedList<int>(false);
+            Assert.IsTrue(singleList.Reverse().IsEmpty);
+
+            singleList.Insert(1);
+            Assert.AreEqual(1, singleList.Reverse().Count);
+            Assert.AreEqual("1", singleList.Reverse().ToString());
+
+            singleList.Insert(2);
+            singleList.Insert(3);
+            Assert.AreEqual(3, singleList.Reverse().Count);
+            Assert.AreEqual("3 -> 2 -> 1", singleList.Reverse().ToString());
+
+            LinkedList<int> doubleList = new LinkedList<int>(true);
+            Assert.IsTrue(doubleList.Reverse().IsEmpty);
+
+            doubleList.Insert(1);
+            Assert.AreEqual(1, doubleList.Reverse().Count);
+            Assert.AreEqual("1", doubleList.Reverse().ToString());
+
+            doubleList.Insert(2);
+            doubleList.Insert(3);
+            Assert.AreEqual(3, doubleList.Reverse().Count);
+            Assert.AreEqual("3 <-> 2 <-> 1", doubleList.Reverse().ToString());
         }
     }
 }

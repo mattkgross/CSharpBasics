@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CSharpBasics
 {
@@ -327,15 +328,25 @@ namespace CSharpBasics
         }
 
         /// <summary>
-        /// Remove the specified data from the list.
+        /// Insert the specified data into the list.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="data">The data to insert.</param>
+        /// <param name="index">Position to insert the node at. Defaults to the end of the list.</param>
+        public void Insert(T data, int index = -1)
+        {
+            this.Insert(new Node<T>(this.IsDoublyLinked, data), index);
+        }
+
+        /// <summary>
+        /// Remove the first instance of the specified data from the list.
         /// </summary>
         /// <returns></returns>
         /// <param name="data">The data to remove.</param>
         /// <param name="startAt">Where in the list to start. Defaults to the beginning.</param>
-        /// <param name="allInstances">If set to <c>true</c> all nodes with the data will be removed; otherwise, only the first instance will be.</param>
-        public void Remove(T data, uint startAt = 0, bool allInstances = false)
+        public void Remove(T data, uint startAt = 0)
         {
-            /*Node<T> temp = this.Head;
+            Node<T> temp = this.Head;
             Node<T> temp2 = temp;
             uint index = 0;
 
@@ -368,17 +379,18 @@ namespace CSharpBasics
                 temp2.Next = temp.Next;
             }
 
+            this.Count--;
+
             // If the head was removed, assign the new one.
             if (index == 0)
             {
                 this.Head = temp.Next;
             }
             // If the tail was removed, assign the new one.
-            else if (index == this.Count - 1)
+            else if (index == this.Count)
             {
                 this.Tail = this.IsDoublyLinked ? temp.Prev : temp2;
-            }*/
-            throw new NotImplementedException();
+            }
         }
 
         /// <summary>
@@ -387,9 +399,46 @@ namespace CSharpBasics
         /// <returns>The reversed list.</returns>
         public LinkedList<T> Reverse()
         {
-            throw new NotImplementedException();
+            LinkedList<T> reversed = new LinkedList<T>(this.IsDoublyLinked);
+            Node<T> iterator;
+
+            if (this.IsDoublyLinked)
+            {
+                iterator = this.Tail;
+
+                while (iterator != null)
+                {
+                    reversed.Insert(new Node<T>(iterator.IsDoublyLinked, iterator.Data));
+                    iterator = iterator.Prev;
+                }
+            }
+            else
+            {
+                // O(2n) - we'll use a stack and pop onto a new list.
+                Stack<Node<T>> nodes = new Stack<Node<T>>();
+                iterator = this.Head;
+
+                while (iterator != null)
+                {
+                    nodes.Push(iterator);
+                    iterator = iterator.Next;
+                }
+
+                while (nodes.Count > 0)
+                {
+                    Node<T> popped = new Node<T>(nodes.Pop());
+                    popped.Next = null;
+                    reversed.Insert(popped);
+                }
+            }
+
+            return reversed;
         }
 
+        /// <summary>
+        /// Does this list contain a cycle?
+        /// </summary>
+        /// <returns><c>true</c>, if cycle was detected, <c>false</c> otherwise.</returns>
         public bool HasCycle()
         {
             throw new NotImplementedException();
