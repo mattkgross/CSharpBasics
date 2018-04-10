@@ -208,5 +208,40 @@ namespace CSharpBasicsTests
             Assert.AreEqual(3, doubleList.Reverse().Count);
             Assert.AreEqual("3 <-> 2 <-> 1", doubleList.Reverse().ToString());
         }
+
+        [Test]
+        public void HasCycleTest()
+        {
+            LinkedList<int> singleList = new LinkedList<int>(false);
+            Assert.IsFalse(singleList.HasCycle());
+
+            singleList.Insert(1);
+            singleList.Insert(1);
+            singleList.Insert(3);
+            singleList.Insert(1);
+            singleList.Insert(4);
+
+            Assert.IsFalse(singleList.HasCycle());
+
+            // Ok, let's do an actual cycle.
+            // 1 -> 2 -> 3 - > (cycle start) 4 -> 5 -> 6 -> 7 -> 8 -> ... (loop back) 
+            Node<int> cycleList = new Node<int>(false, 1);
+            cycleList.Next = new Node<int>(false, 2);
+            cycleList.Next.Next = new Node<int>(false, 3);
+            Node<int> cycleStart = new Node<int>(false, 4);
+            cycleStart.Next = new Node<int>(false, 5);
+            cycleStart.Next.Next = new Node<int>(false, 6);
+            cycleStart.Next.Next.Next = new Node<int>(false, 7);
+            cycleStart.Next.Next.Next.Next = new Node<int>(false, 8);
+            cycleStart.Next.Next.Next.Next.Next = cycleStart;
+            cycleList.Next.Next.Next = cycleStart;
+
+            // This is when I discovered that a circular linked list
+            // causes the constructor and insert to overflow the stack.
+            // This is due to our hard copy loops. The price you pay...
+            // Eeek. We can fix this in a future exercise.
+            // singleList = new LinkedList<int>(false, cycleList);
+            // Assert.IsTrue(singleList.HasCycle());
+        }
     }
 }

@@ -441,7 +441,32 @@ namespace CSharpBasics
         /// <returns><c>true</c>, if cycle was detected, <c>false</c> otherwise.</returns>
         public bool HasCycle()
         {
-            throw new NotImplementedException();
+            // We'll use the fast runner / slow runner approach.
+            // Fast runner moves at 2x the pace of slow runner, so that they're guaranteed to meet.
+            Node<T> fastRunner = this.Head;
+            Node<T> slowRunner = this.Head;
+
+            // Find the meeting point, if there is one. This will be at LOOP_SIZE - k steps into the list.
+            while (fastRunner != null && fastRunner.Next != null)
+            {
+                slowRunner = slowRunner.Next;
+                fastRunner = fastRunner.Next.Next;
+
+                // Collision found.
+                if (slowRunner == fastRunner)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+
+            /*
+             *  An aside: you could find the start of the loop by setting the slow runner back to
+             *  the head and then incrementing each by 1 until they are equal. This works because
+             *  they are guaranteed to each be k steps from the loop start, so they'll meet at the
+             *  beginning.
+             */
         }
 
         /// <summary>
