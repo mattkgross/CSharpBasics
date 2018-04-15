@@ -162,7 +162,55 @@ namespace CSharpBasics.DataStructures
             // Step 2:  Set the start node as current.
             GraphNode<T> current = startNode;
 
-            // Step 3: 
+            while (current != null)
+            {
+                // Step 3: For the current node, consider all of its unvisited neighbors and calculate their
+                //         tentative distances through the current node. Compare the newly calculated tentative
+                //         distance to the current assigned value and assign the smaller one.
+
+                GraphNode<T> nextBestNode = null;
+
+                foreach (KeyValuePair<GraphNode<T>, int> neighbor in current.Neighbors)
+                {
+                    // If already visited, continue on.
+                    if (visitedList[neighbor.Key].Item1)
+                    {
+                        continue;
+                    }
+
+                    // Calculate new tentative distance through current node.
+                    // Add the value of the current node (visitedList[current].Item2) to the edge distance between
+                    // the current node and the target node (neighbor.Value).
+                    int tentativeDistance = visitedList[current].Item2 + neighbor.Value;
+
+                    // If the target node was previously marked with a distance greater than this one,
+                    // then change it, otherwise, keep in the same.
+                    if (tentativeDistance < visitedList[neighbor.Key].Item2)
+                    {
+                        visitedList[neighbor.Key] = new Tuple<bool, int>(visitedList[neighbor.Key].Item1, tentativeDistance);
+                    }
+
+                    // If the current value calculated is the lowest we've seen so far, and that node hasn't yet been
+                    // visited, then that's the next node to visit.
+                    if (nextBestNode == null || (!visitedList[neighbor.Key].Item1 && visitedList[nextBestNode].Item2 > visitedList[neighbor.Key].Item2))
+                    {
+                        nextBestNode = neighbor.Key;
+                    }
+                }
+
+                // Step 4: When we are done considering all of the neighbors of the current node, mark the current
+                //         node as visited and remove it from the unvisited set. A visited node will never be checked again.
+                visitedList[current] = new Tuple<bool, int>(true, visitedList[current].Item2);
+
+                // Step 5: Move to the next unvisited node with the smallest tentative distance and repeat the above steps
+                //         which check neighbors and mark visited. If there is no next node to visit, then set to null so we break.
+                current = nextBestNode == current ? null : nextBestNode;
+
+                // Step 6: If the destination node has been marked visited (when planning a route between two specific nodes) or if
+                //         the smallest tentative distance among the nodes in the unvisited set is infinity (when planning a complete
+                //         traversal; occurs when there is no connection between the initial node and remaining unvisited nodes),
+                //         then stop. The algorithm has finished.
+            }
 
             return path;
         }
