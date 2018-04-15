@@ -61,7 +61,10 @@ namespace CSharpBasics.Tests
         [Test]
         public void DijkstraTest()
         {
-            // Let's find the shortest path between 1 and 5. 
+            // Let's find the shortest path between 1 and 5.
+            // This should be 1 -> 3 -> 6 -> 5, for a total of 20 steps.
+
+
         }
     }
 }

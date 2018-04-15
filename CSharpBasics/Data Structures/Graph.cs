@@ -146,8 +146,23 @@ namespace CSharpBasics.DataStructures
             }
 
             List<GraphNode<T>> path = new List<GraphNode<T>>();
+            path.Add(startNode);
 
+            // Step 1: Mark all nodes unvisited.
+            //         We're creating a HashMap of Nodes with their corresponding 'visited' flag,
+            //         and the current tentative distance to that node (default is infinity).
+            //         Assign to every node a tentative distance value: set it to zero for our initial
+            //         node and to infinity for all other nodes.
+            Dictionary<GraphNode<T>, Tuple<bool, int>> visitedList = new Dictionary<GraphNode<T>, Tuple<bool, int>();
+            foreach (GraphNode<T> node in this.Nodes)
+            {
+                visitedList.Add(node, new Tuple<bool, int>(false, node.Equals(startNode) ? 0 : int.MaxValue));
+            }
 
+            // Step 2:  Set the start node as current.
+            GraphNode<T> current = startNode;
+
+            // Step 3: 
 
             return path;
         }
