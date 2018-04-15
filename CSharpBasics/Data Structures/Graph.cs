@@ -88,6 +88,9 @@ namespace CSharpBasics.DataStructures
         }
     }
 
+    /// <summary>
+    /// Graph object that wraps an adjecency list.
+    /// </summary>
     public class Graph<T>
     {
         /// <summary>
