@@ -38,10 +38,14 @@
     <Compile Include="Tests\LinkedListTest.cs" />
     <Compile Include="Data Structures\HashMap.cs" />
     <Compile Include="Data Structures\LinkedList.cs" />
+    <Compile Include="Problems\MinPalindromes.cs" />
+    <Compile Include="Data Structures\Graph.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data Structures\" />
     <Folder Include="Tests\" />
+    <Folder Include="Algorithms\" />
+    <Folder Include="Problems\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
