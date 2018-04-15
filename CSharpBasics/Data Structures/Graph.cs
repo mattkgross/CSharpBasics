@@ -87,4 +87,69 @@ namespace CSharpBasics.DataStructures
             return true;
         }
     }
+
+    public class Graph<T>
+    {
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="T:CSharpBasics.DataStructures.Graph`1"/> is directed.
+        /// </summary>
+        /// <value><c>true</c> if is directed; otherwise, <c>false</c>.</value>
+        public bool IsDirected { get; private set; }
+
+        private readonly HashSet<GraphNode<T>> nodes;
+        /// <summary>
+        /// Gets the nodes of the graph.
+        /// </summary>
+        /// <value>The nodes making up the graph.</value>
+        public IReadOnlyCollection<GraphNode<T>> Nodes
+        {
+            get
+            {
+                return nodes;
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:CSharpBasics.DataStructures.Graph`1"/> class.
+        /// </summary>
+        /// <param name="isDirected">If set to <c>true</c> is directed.</param>
+        /// <param name="nodes">Nodes making up the graph.</param>
+        public Graph(bool isDirected = false, HashSet<GraphNode<T>> nodes = null)
+        {
+            this.IsDirected = isDirected;
+            this.nodes = nodes ?? new HashSet<GraphNode<T>>();
+        }
+
+        /// <summary>
+        /// Adds the node to the graph. The node must already have its neighbors
+        /// specified. We don't do that here.
+        /// </summary>
+        /// <returns><c>true</c>, if node was added, <c>false</c> if it was already present.</returns>
+        /// <param name="node">Node to add to the graph.</param>
+        public bool AddNode(GraphNode<T> node)
+        {
+            return this.nodes.Add(node);
+        }
+
+        /// <summary>
+        /// Implements Dijkstra's algorithm to find the shortest path from
+        /// the start node to the end node.
+        /// </summary>
+        /// <returns>The shortest path between the two nodes.</returns>
+        /// <param name="startNode">The node to start from.</param>
+        /// <param name="endNode">The node to navigate to.</param>
+        public List<GraphNode<T>> ShortestPathToNode(GraphNode<T> startNode, GraphNode<T> endNode)
+        {
+            if (startNode == null || endNode == null)
+            {
+                throw new ArgumentException("You must specify a start and an end node.");
+            }
+
+            List<GraphNode<T>> path = new List<GraphNode<T>>();
+
+
+
+            return path;
+        }
+    }
 }
