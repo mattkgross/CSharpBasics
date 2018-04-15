@@ -33,6 +33,12 @@ namespace CSharpBasics.DataStructures
         /// <value>The data.</value>
         public T Data { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="T:CSharpBasics.DataStructures.GraphNode`1"/> is directed.
+        /// </summary>
+        /// <value><c>true</c> if is directed; otherwise, <c>false</c>.</value>
+        public bool IsDirected { get; private set; }
+
         // C# Equivalent of a HashMap (unique keys).
         /// <summary>
         /// The neighboring nodes. The key is the Node, the value is the
@@ -40,8 +46,15 @@ namespace CSharpBasics.DataStructures
         /// </summary>
         public Dictionary<GraphNode<T>, int> Neighbors { get; private set; }
 
-        public GraphNode(T data, Dictionary<GraphNode<T>, int> neighbors = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:CSharpBasics.DataStructures.GraphNode`1"/> class.
+        /// </summary>
+        /// <param name="data">Data.</param>
+        /// <param name="isDirected">If set to <c>true</c> is directed.</param>
+        /// <param name="neighbors">Neighbors.</param>
+        public GraphNode(T data, bool isDirected = false, Dictionary<GraphNode<T>, int> neighbors = null)
         {
+            this.IsDirected = isDirected;
             this.Data = data;
             this.Neighbors = neighbors ?? new Dictionary<GraphNode<T>, int>();
         }
@@ -54,13 +67,23 @@ namespace CSharpBasics.DataStructures
         /// <param name="edgeWeight">Edge weight to the neighbor from the current node.</param>
         public bool AddNeighbor(GraphNode<T> neighbor, int edgeWeight)
         {
-            // If the neighbor is already in the list, tell them.
-            if (neighbor == null || this.Neighbors.ContainsKey(neighbor))
+            // If the neighbor is already in the list, null, or not of the same directed
+            // type, then do not add a reference and return false.
+            if (neighbor == null || neighbor.IsDirected != this.IsDirected || this.Neighbors.ContainsKey(neighbor))
             {
                 return false;
             }
 
+            // Add an entry for the new neighbor to this node.
             this.Neighbors.Add(neighbor, edgeWeight);
+
+            // Also add an entry to the new neighbor for this node if not already there
+            // and it's not a directed graph.
+            if (!this.IsDirected)
+            {
+                neighbor.AddNeighbor(this, edgeWeight);
+            }
+
             return true;
         }
     }

@@ -40,6 +40,7 @@
     <Compile Include="Data Structures\LinkedList.cs" />
     <Compile Include="Problems\MinPalindromes.cs" />
     <Compile Include="Data Structures\Graph.cs" />
+    <Compile Include="Tests\GraphTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data Structures\" />
