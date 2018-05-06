@@ -43,6 +43,8 @@
     <Compile Include="Tests\GraphTest.cs" />
     <Compile Include="Algorithms\MergeSort.cs" />
     <Compile Include="Tests\MergeSortTest.cs" />
+    <Compile Include="Algorithms\QuickSort.cs" />
+    <Compile Include="Tests\QuickSortTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data Structures\" />
