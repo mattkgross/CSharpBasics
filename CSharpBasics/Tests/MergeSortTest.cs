@@ -29,6 +29,7 @@ namespace CSharpBasics.Tests
             {
                 Assert.GreaterOrEqual(test[i], prev);
                 Console.Write(test[i] + " ");
+                prev = test[i];
             }
             Console.Write("]");
         }
