@@ -156,7 +156,7 @@ namespace CSharpBasics.DataStructures
             //         and the current tentative distance to that node (default is infinity).
             //         Assign to every node a tentative distance value: set it to zero for our initial
             //         node and to infinity for all other nodes.
-            Dictionary<GraphNode<T>, Tuple<bool, int>> visitedList = new Dictionary<GraphNode<T>, Tuple<bool, int>();
+            Dictionary<GraphNode<T>, Tuple<bool, int>> visitedList = new Dictionary<GraphNode<T>, Tuple<bool, int>>();
             foreach (GraphNode<T> node in this.Nodes)
             {
                 visitedList.Add(node, new Tuple<bool, int>(false, node.Equals(startNode) ? 0 : int.MaxValue));

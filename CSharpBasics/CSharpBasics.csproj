@@ -41,6 +41,8 @@
     <Compile Include="Problems\MinPalindromes.cs" />
     <Compile Include="Data Structures\Graph.cs" />
     <Compile Include="Tests\GraphTest.cs" />
+    <Compile Include="Algorithms\MergeSort.cs" />
+    <Compile Include="Tests\MergeSortTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data Structures\" />
